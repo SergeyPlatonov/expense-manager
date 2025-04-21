@@ -1,0 +1,120 @@
+{% extends 'expenses/base.html' %}
+{% block title %}
+  Dashboard
+{% endblock %}
+{% block content %}
+  <h2>Dashboard</h2>
+  <form method="get" class="row g-3 mb-3">
+    <div class="col-auto">
+      <input type="month" name="month" class="form-control" value="{{ month|default:'' }}" />
+    </div>
+    <div class="col-auto">
+      <input type="date" name="start_date" class="form-control" placeholder="Start date" value="{{ start_date|default:'' }}" />
+    </div>
+    <div class="col-auto">
+      <input type="date" name="end_date" class="form-control" placeholder="End date" value="{{ end_date|default:'' }}" />
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+  </form>
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <canvas id="dailyChart"></canvas>
+    </div>
+    <div class="col-md-6">
+      <canvas id="categoryChart"></canvas>
+    </div>
+  </div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for expense in page_obj %}
+        <tr>
+          <td>{{ expense.title }}</td>
+          <td>{{ expense.category }}</td>
+          <td>${{ expense.amount }}</td>
+          <td>{{ expense.date }}</td>
+          <td>{{ expense.time|default:'--' }}</td>
+          <td>
+            <a href="{% url 'edit_expense' expense.pk %}" class="btn btn-sm btn-warning">Edit</a>
+            <a href="{% url 'delete_expense' expense.pk %}" class="btn btn-sm btn-danger">Delete</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="6">No records found.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <nav>
+    <ul class="pagination">
+      {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        </li>
+      {% endif %}
+      <li class="page-item active">
+        <span class="page-link">{{ page_obj.number }}</span>
+      </li>
+      {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+  <script>
+const dailyLabels = [];
+const dailyData = [];
+{% for item in daily_totals %}
+    dailyLabels.push("{{ item.date }}");
+    dailyData.push({{ item.total|floatformat:"2" }});
+{% endfor %}
+const categoryLabels = [];
+const categoryData = [];
+{% for item in category_totals %}
+    categoryLabels.push("{{ item.category }}");
+    categoryData.push({{ item.total|floatformat:"2" }});
+{% endfor %}
+new Chart(document.getElementById('dailyChart'), {
+    type: 'bar',
+    data: {
+        labels: dailyLabels,
+        datasets: [{
+            label: 'Total Expenses per Day',
+            data: dailyData,
+            backgroundColor: 'rgba(54, 162, 235, 0.7)'
+        }]
+    }
+});
+new Chart(document.getElementById('categoryChart'), {
+    type: 'pie',
+    data: {
+        labels: categoryLabels,
+        datasets: [{
+            label: 'Expenses by Category',
+            data: categoryData,
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(54, 162, 235, 0.7)',
+                'rgba(255, 206, 86, 0.7)',
+                'rgba(75, 192, 192, 0.7)',
+                'rgba(153, 102, 255, 0.7)',
+                'rgba(255, 159, 64, 0.7)'
+            ]
+        }]
+    }
+});
+</script>
+{% endblock %}

@@ -1,8 +1,8 @@
-# Money Spend Management Application
+# Expense Management Application
 A modern Django web application to help users track, visualize, and manage their personal spending.
 ## Features
 - **User Authentication**: Register, login, logout, password reset/change (secure, CSRF-protected)
-- **Spending Records**: Add, edit, delete, and view spending entries (title, category, amount, date, time)
+- **Expense Records**: Add, edit, delete, and view spending entries (title, category, amount, date, time)
 - **Filtering**: View records by month or custom date range
 - **Data Visualization**: Interactive dashboard with daily/category spend charts (Chart.js)
 - **User Experience**: Responsive Bootstrap UI, user dropdown, modern neutral background
