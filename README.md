@@ -10,8 +10,8 @@ A modern Django web application to help users track, visualize, and manage their
 ## Getting Started
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/SergeyPlatonov/spend-manager.git
-cd spend-manager
+git clone https://github.com/SergeyPlatonov/expense_manager.git
+cd expense_manager
 ```
 ### 2. Set up a virtual environment and install dependencies
 ```bash
