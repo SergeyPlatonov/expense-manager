@@ -52,6 +52,10 @@ python manage.py runserver
 ```
 ### 8. Access the app
 Go to [http://127.0.0.1:8000/](http://127.0.0.1:8000/) in your browser.
+### 9. Create the requirements file
+```bash
+pip freeze > requirements.txt
+```
 ## Password Reset Email (Development)
 To see password reset emails in your terminal, add this to your `expense_manager/settings.py`:
 ```python
