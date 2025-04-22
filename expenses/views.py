@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
-from .models import Expense
+from .models import CATEGORY_CHOICES, Expense
 from .forms import (
     ExpenseForm,
     RegisterForm,
@@ -57,23 +57,25 @@ def logout_view(request):
 
 @login_required
 def dashboard(request):
-    # Filtering by month or date range
     expenses = Expense.objects.filter(user=request.user)
     month = request.GET.get("month")
     start_date = request.GET.get("start_date")
     end_date = request.GET.get("end_date")
+    category = request.GET.get("category")
     if month:
         year, month_num = map(int, month.split("-"))
         expenses = expenses.filter(date__year=year, date__month=month_num)
     if start_date and end_date:
         expenses = expenses.filter(date__range=[start_date, end_date])
+    if category:
+        expenses = expenses.filter(category=category)
     expenses = expenses.order_by("-date", "-time")
     paginator = Paginator(expenses, 10)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
-    # Aggregation for chart
     daily_totals = expenses.values("date").annotate(total=Sum("amount")).order_by("date")
     category_totals = expenses.values("category").annotate(total=Sum("amount")).order_by("category")
+    categories = CATEGORY_CHOICES
     return render(
         request,
         "expenses/dashboard.html",
@@ -84,6 +86,8 @@ def dashboard(request):
             "month": month,
             "start_date": start_date,
             "end_date": end_date,
+            "category": category,
+            "categories": categories,
         },
     )
 

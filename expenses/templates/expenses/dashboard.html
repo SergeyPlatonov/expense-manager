@@ -4,15 +4,27 @@
 {% endblock %}
 {% block content %}
   <h2>Dashboard</h2>
-  <form method="get" class="row g-3 mb-3">
+  <form method="get" class="row g-3 mb-3 align-items-end">
     <div class="col-auto">
+      <label for="month" class="form-label mb-0">Month:</label>
       <input type="month" name="month" class="form-control" value="{{ month|default:'' }}" />
     </div>
     <div class="col-auto">
+      <label for="start_date" class="form-label mb-0">Start date:</label>
       <input type="date" name="start_date" class="form-control" placeholder="Start date" value="{{ start_date|default:'' }}" />
     </div>
     <div class="col-auto">
+      <label for="end_date" class="form-label mb-0">End date:</label>
       <input type="date" name="end_date" class="form-control" placeholder="End date" value="{{ end_date|default:'' }}" />
+    </div>
+    <div class="col-auto">
+      <label for="category" class="form-label mb-0">Category:</label>
+      <select id="category" name="category" class="form-select">
+        <option value="">All</option>
+        {% for key, value in categories %}
+          <option value="{{ key }}" {% if category == key %}selected{% endif %}>{{ value }}</option>
+        {% endfor %}
+      </select>
     </div>
     <div class="col-auto">
       <button type="submit" class="btn btn-primary">Filter</button>
